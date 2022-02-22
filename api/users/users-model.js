@@ -20,7 +20,7 @@ function find() {
    */
   return db('users as u')
   .join('roles as r', 'r.role_id', 'u.role_id')
-  .select('user_id', 'username', 'role_name')
+  .select('user_id', 'username', 'password', 'role_name')
 }
 
 function findBy(filter) {
@@ -42,7 +42,7 @@ function findBy(filter) {
 //     .select('u.user_id', 'u.username', 'password' 'r.role_name')
 return db('users as u')
 .join('roles as r', 'r.role_id', 'u.role_id')
-.select('user_id', 'username', 'role_name')
+.select('user_id', 'username', 'password', 'role_name')
 .where(filter)
   }
 
