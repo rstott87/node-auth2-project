@@ -20,23 +20,39 @@ const restricted = (req, res, next) => {
 
     Put the decoded token in the req object, to make life easier for middlewares downstream!
   */
-//  try {
-//   const [user] = await findBy
-//  } catch(err)
+
 //  next(err)
+// const token = req.headers.authorization
+//   if (!token) {
+//    next({ status:401, message: 'token required'})
+//   } else {
+//   jwt.verify(token, JWT_SECRET,  ()=>(err, decodedToken ) =>{
+//     if (err) {
+//       next({ status: 401, message: 'token required'})
+//     } else {
+//       req.decodedToken=decodedToken; 
+//       next() //solution 1:08:50
+//     }
+//   })
+//   }
+// }
+
+
 const token = req.headers.authorization
-  if (!token) {
-   next({ status:401, message: 'token required'})
-  } 
-  jwt.verify(token, JWT_SECRET,  ()=>(err, decodedToken ) =>{
-    if (err) {
-      next({ status: 401, message: 'token required'})
+if(!token) {
+  next({ status: 401, message: 'token required' });
+} else {
+  jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
+    if(err) {
+      next({ status: 401, message: 'token invalid' });
     } else {
-      req.decodedToken=decodedToken; 
-      next() //solution 1:08:50
+      req.decodedJwt = decodedToken;
+      next()
     }
   })
 }
+}
+
 
 const only = role_name =>  (req, res, next) => {
   /*
@@ -49,11 +65,13 @@ const only = role_name =>  (req, res, next) => {
 
     Pull the decoded token from the req object, to avoid verifying it again!
   */
-  if (role_name === req.decodedToken.role_name) {
-    next()
-  } else
-      next({status: 403, message: 'This is not for you'})
-}   //solution videp 1:17:08
+    if (role_name != req.decodedJwt.role_name) {
+      next({ status: 403, message: 'this is not for you' });
+    } else {
+      next()
+    }
+  }
+   //solution videp 1:17:08
 
 
 const checkUsernameExists = async (req, res, next) => {
