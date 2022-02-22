@@ -17,13 +17,24 @@ const { restricted, only } = require("../auth/auth-middleware.js");
     }
   ]
  */
-router.get("/", restricted, (req, res, next) => { // done for you
+// router.get("/", restricted, (req, res, next) => { // done for you
+//   Users.find()
+//     .then(users => {
+//       res.json(users);
+//     })
+//     .catch(next);
+// });
+
+router.get("/",  (req, res, next) => { // done for you
   Users.find()
     .then(users => {
       res.json(users);
     })
     .catch(next);
 });
+
+
+
 
 /**
   [GET] /api/users/:user_id
